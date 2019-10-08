@@ -2,5 +2,5 @@
 require_once __DIR__.'/functions.php';
 
 create_download($url, $token);
-create_file($file, "/tmp/$token");
-create_share($file, '1234');
+create_file($file, "/tmp/$token", $token);
+create_share($file, $pass, $token);

@@ -1,6 +1,6 @@
 <?php
 
-define('SERVER_URI', 'https://localhost');
+define('SERVER_URI', 'http://localhost');
 define('API_PATH', '/ocs/v1.php/apps/files_sharing/api/v1');
 define('WEBDAV', '/remote.php/webdav/');
 
@@ -12,11 +12,14 @@ function validate($data)
     if (empty($data['url'])) {
         die('URL error!');
     }
-    if (empty($data['cat'])) {
-        die('Category error!');
-    }
     if (empty($data['fname'])) {
         die('File Name error!');
+    }
+    if (empty($data['pass'])) {
+        die('Password error!');
+    }
+    if ($data['cat'] == '') {
+        die('Category error!');
     }
     return;
 }
@@ -56,8 +59,8 @@ function create_folder($folder)
 function create_download($url, $token)
 {
     $url = escapeshellarg($url);
-    $cmd = "wget -c $url -O /tmp/$token >/tmp/$token.wget 2>&1";
-    exec($cmd);
+    $cmd = "wget -c $url -O /tmp/$token >/tmp/$token.wget 2>&1 ";
+    shell_exec($cmd);
     return true;
 }
 
@@ -65,20 +68,21 @@ function create_file($file, $bin_file, $token)
 {
     #$token = sha1(random_bytes(12));
     $url = escapeshellarg(SERVER_URI.WEBDAV.$file);
-    $cmd = "curl -# -u ".USER.":".PASS." -T $bin_file $url >/tmp/$token.curl 2>&1 && echo OK >/tmp/$token.ok";
+    $cmd = "curl -# -u ".USER.":".PASS." -T $bin_file $url >/tmp/$token.curl 2>&1";
 
-    exec($cmd);
+    shell_exec($cmd);
+    unlink("/tmp/$token");
 //    echo $cmd;
     return true;
 }
 
 
-function create_share($file, $pass)
+function create_share($file, $pass, $token)
 {
     $url = SERVER_URI.API_PATH;
-    $cmd = "curl -u ".USER.':'.PASS." $url/shares --data 'path=/$file&shareType=1&permissions=1&password=$pass'";
-    $o = shell_exec($cmd);
-    var_dump($o);
+    $cmd = "curl -u ".USER.':'.PASS." $url/shares --data 'path=$file&shareType=3&permissions=1&password=$pass'";
+    $o = base64_encode(shell_exec($cmd));
+    shell_exec("echo '$o' >/tmp/$token.ok");
 
 }
 
@@ -123,6 +127,24 @@ function parse_wget($path)
         'len'=>$len,
         'type'=>$type,
     ];
+
+}
+
+
+function parse_curl($path)
+{
+    $data = file_get_contents($path);
+    $lines = explode("\r", $data);
+    return end($lines);
+}
+
+
+
+function parse_okd($path)
+{
+	$data = base64_decode(file_get_contents($path));
+	$xml = simplexml_load_string($data);
+	return $xml->data->token;
 
 }
 

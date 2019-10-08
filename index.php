@@ -29,6 +29,10 @@ $list = get_cat();
                     <label for="fname">Movie Name: *</label>
                     <input class="form-control" type="text" id="fname" placeholder="Avengers:Endgame.mkv" name="fname" required>
                 </div>
+                <div class="form-group">
+                    <label for="pass">Link Password: *</label>
+                    <input class="form-control" type="text" id="pass" placeholder="secret" name="pass" required>
+                </div>
  <!--               <div class="form-group">
                     <label for="release">Release Year: *</label>
                     <input class="form-control" type="number" id="release" placeholder="1990" name="release" required>

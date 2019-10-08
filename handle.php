@@ -9,14 +9,18 @@ $data = $_POST;
 
 validate($data);
 
-$filename = urlencode(str_replace('/','', $data['fname']));
+$filename = (str_replace(['/',' '],['','_'], $data['fname']));
 $cat = get_cat()[$data['cat']];
 $url = $data['url'];
+$pass = $data['pass'];
 
 $token = bin2hex(random_bytes(12));
 
 $file = $cat.'/'.$filename;
 
-$cmd = "php -r \" \\\$url = '$url'; \\\$file = '$file'; \\\$token = '$token'; require __DIR__.'/proc.php';\" &";
-exec($cmd);
+$cmd = "php -r \" \\\$url = '$url'; \\\$file = '$file'; \\\$token = '$token'; \\\$pass = '$pass'; require __DIR__.'/proc.php';\"";
+exec($cmd.' >/dev/null 2>&1 &');
 header('Location: t.php?id='.$token);
+flush();
+ob_flush();
+exit;
