@@ -11,9 +11,9 @@ $list = get_cat();
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width">
         <title>ARUCATS v1.0.0</title>
-        <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.css"  type="text/css">
-        <script src="/vendor/jquery/jquery.js" charset="utf-8"></script>
-        <script src="/main.js" charset="utf-8"></script>
+        <link rel="stylesheet" href="/remote/vendor/bootstrap/css/bootstrap.css"  type="text/css">
+        <script src="/remote/vendor/jquery/jquery.js" charset="utf-8"></script>
+        <script src="/remote/main.js" charset="utf-8"></script>
     </head>
     <body>
         <div class="container">
