@@ -59,19 +59,18 @@ function create_folder($folder)
 function create_download($url, $token)
 {
     $url = escapeshellarg($url);
-    $cmd = "wget -c $url -O /tmp/$token >/tmp/$token.wget 2>&1 ";
+    $cmd = "wget -c $url -O /tmp/$token >/tmp/$token.wget 2>&1 && echo 'COM' >/tmp/$token.dlok";
     shell_exec($cmd);
-    return true;
 }
 
 function create_file($file, $bin_file, $token)
 {
     #$token = sha1(random_bytes(12));
     $url = escapeshellarg(SERVER_URI.WEBDAV.$file);
-    $cmd = "curl -# -u ".USER.":".PASS." -T $bin_file $url >/tmp/$token.curl 2>&1";
+    $cmd = "curl -# -u ".USER.":".PASS." -T $bin_file $url >/tmp/$token.curl 2>&1 && rm $bin_file ";
 
     shell_exec($cmd);
-    unlink("/tmp/$token");
+#    unlink("/tmp/$token");
 //    echo $cmd;
     return true;
 }
@@ -82,7 +81,7 @@ function create_share($file, $pass, $token)
     $url = SERVER_URI.API_PATH;
     $cmd = "curl -u ".USER.':'.PASS." $url/shares --data 'path=$file&shareType=3&permissions=1&password=$pass'";
     $o = base64_encode(shell_exec($cmd));
-    shell_exec("echo '$o' >/tmp/$token.ok");
+    exec("echo '$o' >/tmp/$token.ok");
 
 }
 

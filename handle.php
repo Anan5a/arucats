@@ -19,8 +19,8 @@ $token = bin2hex(random_bytes(12));
 $file = $cat.'/'.$filename;
 
 $cmd = "php -r \" \\\$url = '$url'; \\\$file = '$file'; \\\$token = '$token'; \\\$pass = '$pass'; require __DIR__.'/proc.php';\"";
+#var_dump($cmd.' >/dev/null 2>&1 &');
 exec($cmd.' >/dev/null 2>&1 &');
 header('Location: t.php?id='.$token);
-flush();
-ob_flush();
+echo "<a href='t.php?id=$token'>Copy this link</a>";
 exit;
